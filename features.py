@@ -20,6 +20,8 @@ def feature_extraction_methods(treino, teste, tipo, stopwords, smooth):
     return pre.fit_transform(treino), pre.transform(teste)
 
 def feature_selection_methods(treino, classes, teste, metodo, k):
+
+    ##Selecionar os k melhores ranqueados de acordo com o método
     if metodo is "chi":
         funct = feature_selection.SelectKBest(feature_selection.chi2, k=k)
     elif metodo is "anova":

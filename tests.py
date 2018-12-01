@@ -1,7 +1,10 @@
 from sklearn import metrics
+from sklearn.model_selection import GridSearchCV
 import features as f
 import models as m
 import data as d
+from itertools import permutations
+
 def avaliacao(metrica, classes, teste):
     if metrica is 'acuracia':
         return metrics.accuracy_score(y_true=classes, y_pred=teste)
@@ -12,7 +15,25 @@ def avaliacao(metrica, classes, teste):
 
 #def cross_domain():
 
-#def grid_search():
+def gerar_parametros(parametros):
+    import itertools
+    lista1 = parametros['algoritmo']
+    lista2 = parametros['feature_extraction1']
+    lista3 = parametros['feature_selection1']
+    lista4 = parametros["n_features"]
+
+    z = [(a,b,c,d) for a in lista1 for b in lista2 for c in lista3 for d in lista4]
+    return z
+
+def grid_search(parametros):
+    p = gerar_parametros(parametros)
+    dic = {}
+    for i in p:
+        a,b,c,x = i
+        x=main(a,b,'acuracia', False, c,x)
+        dic.update({i:x})
+
+    d.salvar('results',dic)
 
 def main(algoritmo, feature_extraction1, metrica, smooth, feature_selection1,  n_features):
 
@@ -26,8 +47,12 @@ def main(algoritmo, feature_extraction1, metrica, smooth, feature_selection1,  n
 
     predito = m.teste(teste1,modelo1)
 
-    print(avaliacao(metrica, teste_classes,predito))
+    return avaliacao(metrica, teste_classes,predito)
 
-main("logistic", "idf", "acuracia", True, "chi", 5000)
+#main("logistic", "idf", "acuracia", True, "chi", 5000)
 
-#parametros_grid = {'algoritmo':['logistic', 'naive'], 'feature_extraction1':['tfidf', 'binario', 'counter'],'feature_selection1':['chi', 'anova'] 'n_features':[i for i in range(100, 6000, 500)]}
+parametros_grid = {'algoritmo':['logistic', 'naive'], 'feature_extraction1':['tfidf', 'binario', 'counter'],'feature_selection1':['chi', 'anova'], 'n_features':[i for i in range(100, 6000, 500)]}
+
+grid_search(parametros_grid)
+#clf = GridSearchCV(main, parametros_grid, cv=5)
+#print(clf.fit())
