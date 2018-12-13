@@ -15,7 +15,7 @@ def feature_extraction_methods(treino, teste, tipo, stopwords, smooth):
         pre = feature_extraction.text.CountVectorizer(stop_words=stopwords)
     elif tipo is 'binario':
         pre = feature_extraction.text.CountVectorizer(stop_words=stopwords)
-    else: pre = feature_extraction.text.BaseEstimator
+
 
     return pre.fit_transform(treino), pre.transform(teste)
 
@@ -32,4 +32,5 @@ def feature_selection_methods(treino, classes, teste, metodo, k):
     teste = funct.transform(teste)
 
     return treino, teste
+
 
