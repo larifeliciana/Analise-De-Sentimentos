@@ -1,9 +1,11 @@
 import pickle
 import os
 
+
 def ler(endereco):
     arq = open(endereco, 'rb')
     return pickle.load(arq)
+
 
 def carregar(pasta):
     caminhos = [os.path.join(pasta, nome) for nome in os.listdir(pasta)]
@@ -17,6 +19,7 @@ def carregar(pasta):
 def salvar(endereco, lista):
     arq = open(endereco, 'wb')
     pickle.dump(lista, arq)
+
 
 def dataset(nome):
     x = ler(nome)

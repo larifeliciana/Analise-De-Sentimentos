@@ -5,11 +5,12 @@ from sklearn.tree import DecisionTreeClassifier
 
 from sklearn.ensemble import RandomForestClassifier
 
+
 def modelo(treino, treino_classe, tipo):
-    if tipo is 'naive': #Naive Bayes
+    if tipo is 'naive':
         modelo = naive_bayes.MultinomialNB()
-    elif tipo is 'logistic':  # Regressão Logística
-        modelo = linear_model.LogisticRegression()
+    elif tipo is 'logistic':
+        modelo = linear_model.LogisticRegression(solver='lbfgs')
     elif tipo is 'svm':
         modelo = svm.SVC(kernel="linear")
     elif tipo is 'random':
@@ -17,11 +18,11 @@ def modelo(treino, treino_classe, tipo):
     elif tipo is 'tree':
         modelo = DecisionTreeClassifier()
 
-
-
-    x = modelo.fit(treino,treino_classe )
+    x = modelo.fit(treino, treino_classe)
     return x
 
-def teste(teste, modelo): #retorna as classes dos documentos de teste
+
+# retorna as classes dos documentos de teste
+def teste(teste, modelo):
     return modelo.predict(teste)
 

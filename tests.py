@@ -8,6 +8,7 @@ import datetime
 import random
 from itertools import permutations
 
+
 def avaliacao(metrica, classes, teste):
     if metrica is 'acuracia':
         return metrics.accuracy_score(y_true=classes, y_pred=teste)
@@ -37,28 +38,29 @@ def cross_validation(data, labels, k, algoritmo, metrica, feature_extraction1, f
     print(results)
     return sum(results)/k
 
+
 def cross_domain(data, labels, algoritmo, metrica, feature_extraction1, feature_selection1, n_features):#data:lista cada elemento é um dataset
     numero_datasets = len(data)
     results = []
     results1 = []
-    for i in range(numero_datasets):
-        print(i)
-        teste = data[i]
-        teste_classes = labels[i]
+    for j in range(numero_datasets):
+        print(j)
+        teste = data[j]
+        teste_classes = labels[j]
         treino = []
         treino_classes = []
 
-        for i in range(0,i):
+        for i in range(j):
             treino = data[i]
             treino_classes = labels[i]
 
-
-        for i in range(i+1, numero_datasets):
+        for i in range(j+1, numero_datasets):
            treino = treino + data[i]
            treino_classes = treino_classes + labels[i]
 
         treino, teste = f.feature_extraction_methods(treino, teste, feature_extraction1, True, False)
-        treino, teste = f.feature_selection_methods(treino, treino_classes, teste, feature_selection1, n_features)
+        treino, teste = f.feature_selection_methods(treino, treino_classes, teste, feature_selection1,
+                                                    n_features)
 
         modelo = m.modelo(treino, treino_classes, algoritmo)
         predito = m.teste(teste, modelo)
@@ -87,48 +89,49 @@ def gerar_parametros(parametros):
     z = [(a,b,c,d) for a in lista1 for b in lista2 for c in lista3 for d in lista4]
     return z
 
+
 def grid_search(parametros):
     p = gerar_parametros(parametros)
     dic = {}
     for i in p:
         print(datetime.datetime.now())
-        a,b,c,x = i
-        x,y = main(a, b, 'acuracia', c, x)
+        a, b, c, x = i
+        x, y = main(a, b, 'acuracia', c, x)
 
-        dic.update({i:(x,y)})
+        dic.update({i: (x, y)})
 
-    d.salvar('logistic',dic)
+    d.salvar('logistic', dic)
+
 
 def main(algoritmo, feature_extraction1, metrica, feature_selection1, n_features):
     print('e')
     data = []
     labels = []
-    datasets = ['books.pk','eletronics.pk', 'clothes.pk', 'cds.pk', 'movies.pk']
+    datasets = ['books.pk', 'eletronics.pk', 'clothes.pk', 'cds.pk', 'movies.pk']
     for i in datasets:
         x, y = d.ler(i)
         data.append(x)
         labels.append(y)
 
-    for i in range(len(data)):
-        doc = data[i]
-        classes = labels[i]
-        c = list(zip(doc, classes))
+    # for i in range(len(data)):
+    #     doc = data[i]
+    #     classes = labels[i]
+    #     c = list(zip(doc, classes))
+    #
+    #     random.shuffle(c)
+    #
+    #     a, b = zip(*c)
+    #     data[i] = a
+    #     labels[i] = b
 
-        random.shuffle(c)
-
-        a, b = zip(*c)
-        data[i] = a
-        labels[i] = b
-
-    return cross_domain(data,labels,algoritmo, metrica, feature_extraction1,feature_selection1, n_features)
-
-
-#parametros_grid = {'algoritmo':['logistic'], 'feature_extraction1':['tfidf'],'feature_selection1':['chi','anova'], 'n_features':[i for i in range(100, 6000, 500)]}
+    return cross_domain(data, labels, algoritmo, metrica, feature_extraction1, feature_selection1,
+                        n_features)
 
 
+# parametros_grid = {'algoritmo':['logistic'], 'feature_extraction1':['tfidf'],'feature_selection1':['chi','anova'],
+#                    'n_features':[i for i in range(100, 6000, 500)]}
+# grid_search(parametros_grid)
+# ,'idf', 'binario', 'counter'
+# , 'anova'
 
-#grid_search(parametros_grid)
-#,'idf', 'binario', 'counter'
-#, 'anova'
-
-main('tree', 'tfidf', 'acuracia', 'chi', 100)
+main('logistic', 'tfidf', 'acuracia', 'chi', 100)
