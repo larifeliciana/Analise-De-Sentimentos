@@ -59,6 +59,7 @@ def cross_domain(data, labels, algoritmo, metrica, feature_extraction1, feature_
            treino_classes = treino_classes + labels[i]
 
         treino, teste = f.feature_extraction_methods(treino, teste, feature_extraction1, True, False)
+
         treino, teste = f.feature_selection_methods(treino, treino_classes, teste, feature_selection1,
                                                     n_features)
 
@@ -99,8 +100,7 @@ def grid_search(parametros):
         x, y = main(a, b, 'acuracia', c, x)
 
         dic.update({i: (x, y)})
-
-    d.salvar('logistic', dic)
+        d.salvar('svm1001600', dic)
 
 
 def main(algoritmo, feature_extraction1, metrica, feature_selection1, n_features):
@@ -113,25 +113,10 @@ def main(algoritmo, feature_extraction1, metrica, feature_selection1, n_features
         data.append(x)
         labels.append(y)
 
-    # for i in range(len(data)):
-    #     doc = data[i]
-    #     classes = labels[i]
-    #     c = list(zip(doc, classes))
-    #
-    #     random.shuffle(c)
-    #
-    #     a, b = zip(*c)
-    #     data[i] = a
-    #     labels[i] = b
-
     return cross_domain(data, labels, algoritmo, metrica, feature_extraction1, feature_selection1,
                         n_features)
 
 
-# parametros_grid = {'algoritmo':['logistic'], 'feature_extraction1':['tfidf'],'feature_selection1':['chi','anova'],
-#                    'n_features':[i for i in range(100, 6000, 500)]}
-# grid_search(parametros_grid)
-# ,'idf', 'binario', 'counter'
-# , 'anova'
-
-main('logistic', 'tfidf', 'acuracia', 'chi', 100)
+parametros_grid = {'algoritmo':['naive'], 'feature_extraction1':['tfidf', 'idf','counter','binario'],'feature_selection1':['chi','anova'],
+                    'n_features':[i for i in range(4100, 5600, 500)]}
+grid_search(parametros_grid)

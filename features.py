@@ -17,8 +17,12 @@ def feature_extraction_methods(treino, teste, tipo, stopwords, smooth):
     elif tipo is 'binario':
         pre = feature_extraction.text.CountVectorizer(stop_words=stopwords)
 
-    return pre.fit_transform(treino), pre.transform(teste)
 
+    x = pre.fit_transform(treino)
+    y = pre.transform(teste)
+    print('************')
+    print(len(pre.get_feature_names()))
+    return x,y
 
 def feature_selection_methods(treino, classes, teste, metodo, k):
     # Selecionar os k melhores ranqueados de acordo com o método

@@ -25,4 +25,3 @@ def modelo(treino, treino_classe, tipo):
 # retorna as classes dos documentos de teste
 def teste(teste, modelo):
     return modelo.predict(teste)
-
