@@ -2,7 +2,7 @@ from sklearn import metrics
 import features as f
 import models as m
 import nltk
-import data as d
+import data as dt
 import math
 import datetime
 import random
@@ -17,7 +17,7 @@ def avaliacao(metrica, classes, teste):
 
 
 def cross_validation(data, labels, k, algoritmo, metrica, feature_extraction1, feature_selection1, n_features):
-    tamanho = len(data) / k #400
+    tamanho = len(data) / k     # 400
     results = []
     for i in range(k):
         inicio = int(tamanho * i)
@@ -39,7 +39,7 @@ def cross_validation(data, labels, k, algoritmo, metrica, feature_extraction1, f
     return sum(results)/k
 
 
-def cross_domain(data, labels, algoritmo, metrica, feature_extraction1, feature_selection1, n_features):#data:lista cada elemento é um dataset
+def cross_domain(data, labels, algoritmo, feature_extraction1, feature_selection1, n_features):#data:lista cada elemento é um dataset
     numero_datasets = len(data)
     results = []
     results1 = []
@@ -59,7 +59,6 @@ def cross_domain(data, labels, algoritmo, metrica, feature_extraction1, feature_
            treino_classes = treino_classes + labels[i]
 
         treino, teste = f.feature_extraction_methods(treino, teste, feature_extraction1, True, False)
-
         treino, teste = f.feature_selection_methods(treino, treino_classes, teste, feature_selection1,
                                                     n_features)
 
@@ -87,7 +86,7 @@ def gerar_parametros(parametros):
     lista3 = parametros['feature_selection1']
     lista4 = parametros["n_features"]
 
-    z = [(a,b,c,d) for a in lista1 for b in lista2 for c in lista3 for d in lista4]
+    z = [(a, b, c, d) for a in lista1 for b in lista2 for c in lista3 for d in lista4]
     return z
 
 
@@ -97,26 +96,39 @@ def grid_search(parametros):
     for i in p:
         print(datetime.datetime.now())
         a, b, c, x = i
-        x, y = main(a, b, 'acuracia', c, x)
+        x, y = main(a, b, c, x)
 
         dic.update({i: (x, y)})
-        d.salvar('svm1001600', dic)
+
+        dt.salvar('logistic', dic)
 
 
-def main(algoritmo, feature_extraction1, metrica, feature_selection1, n_features):
-    print('e')
+def main(algoritmo, feature_extraction1, feature_selection1, n_features):
     data = []
     labels = []
     datasets = ['books.pk', 'eletronics.pk', 'clothes.pk', 'cds.pk', 'movies.pk']
     for i in datasets:
-        x, y = d.ler(i)
+        x, y = dt.ler(i)
         data.append(x)
         labels.append(y)
 
-    return cross_domain(data, labels, algoritmo, metrica, feature_extraction1, feature_selection1,
+    return cross_domain(data, labels, algoritmo, feature_extraction1, feature_selection1,
                         n_features)
 
 
-parametros_grid = {'algoritmo':['naive'], 'feature_extraction1':['tfidf', 'idf','counter','binario'],'feature_selection1':['chi','anova'],
-                    'n_features':[i for i in range(4100, 5600, 500)]}
-grid_search(parametros_grid)
+parametros_grid = {'algoritmo': ['logistic'],
+                   'feature_extraction1': ['tfidf', 'idf', 'counter', 'binario'],
+                   'feature_selection1': ['chi', 'anova'],
+                   'n_features': [i for i in range(100, 6000, 500)]}
+
+
+def sort_dict(dic):
+    import operator
+    return sorted(dic.items(), key=operator.itemgetter(1), reverse=True)
+
+
+# grid_search(parametros_grid)
+# main('logistic', 'tfidf', 'anova', 100)
+result = dt.ler('logistic')
+for a in sort_dict(result):
+    print(a)
