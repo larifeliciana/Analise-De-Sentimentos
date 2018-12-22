@@ -26,7 +26,8 @@ def feature_selection_methods(treino, classes, teste, metodo, k):
         funct = feature_selection.SelectKBest(feature_selection.chi2, k=k)
     elif metodo is "anova":
         funct = feature_selection.SelectKBest(feature_selection.f_classif, k=k)
-    else: return treino, teste
+    else:
+        return treino, teste
 
     treino = funct.fit_transform(treino, classes)
     teste = funct.transform(teste)
