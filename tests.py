@@ -100,29 +100,23 @@ def grid_search(parametros):
 
         dic.update({i: (x, y)})
 
-    dt.salvar('random', dic)
-    print(dic)
+        dt.salvar('logistic', dic)
 
 
-def get_data_and_label(datasets):
+def main(algoritmo, feature_extraction1, feature_selection1, n_features):
     data = []
     labels = []
+    datasets = ['books.pk', 'eletronics.pk', 'clothes.pk', 'cds.pk', 'movies.pk']
     for i in datasets:
         x, y = dt.ler(i)
         data.append(x)
         labels.append(y)
 
-    return data, labels
-
-
-def main(algoritmo, feature_extraction1, feature_selection1, n_features):
-    data, labels = get_data_and_label(['books.pk', 'eletronics.pk', 'clothes.pk', 'cds.pk',
-                                       'movies.pk'])
     return cross_domain(data, labels, algoritmo, feature_extraction1, feature_selection1,
                         n_features)
 
 
-parametros_grid = {'algoritmo': ['random'],
+parametros_grid = {'algoritmo': ['logistic'],
                    'feature_extraction1': ['tfidf', 'idf', 'counter', 'binario'],
                    'feature_selection1': ['chi', 'anova'],
                    'n_features': [i for i in range(100, 6000, 500)]}
@@ -133,8 +127,8 @@ def sort_dict(dic):
     return sorted(dic.items(), key=operator.itemgetter(1), reverse=True)
 
 
-grid_search(parametros_grid)
-# main('logistic', 'tfidf', 'chi', 100)
-# result = dt.ler('logistic')
-# for a in sort_dict(result):
-#     print(a)
+# grid_search(parametros_grid)
+# main('logistic', 'tfidf', 'anova', 100)
+result = dt.ler('logistic')
+for a in sort_dict(result):
+    print(a)
