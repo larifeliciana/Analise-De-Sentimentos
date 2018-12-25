@@ -2,6 +2,7 @@
 from sklearn import feature_extraction
 from sklearn import feature_selection
 import delta
+import numpy as np
 
 def feature_extraction_methods(treino, teste, tipo, stopwords, smooth):
     if stopwords:
@@ -22,12 +23,29 @@ def feature_extraction_methods(treino, teste, tipo, stopwords, smooth):
     return pre.fit_transform(treino), pre.transform(teste)#, pre.get_feature_names()
 
 
-def feature_selection_methods(treino, classes, teste, metodo, k, features):
+def feature_selection_methods(treino, classes, teste, metodo, k, doc_treino, doc_teste): ##precisa dos dados originais para selectionar com o tfidf e o delta
+    stopwords = 'english'
     # Selecionar os k melhores ranqueados de acordo com o método
     if metodo is "chi":
         funct = feature_selection.SelectKBest(feature_selection.chi2, k=k)
     elif metodo is "anova":
         funct = feature_selection.SelectKBest(feature_selection.f_classif, k=k)
+    elif metodo is "tfidf":
+        if stopwords:
+            stopwords = 'english'
+        pre = feature_extraction.text.TfidfVectorizer(stop_words=stopwords, binary=True)
+        tr = pre.fit_transform(doc_treino)
+        te = pre.transform(doc_teste)
+        selectKbest(pre, treino,k)
+
+    elif metodo is "delta":
+        if stopwords:
+            stopwords = 'english'
+        pre = feature_extraction.text.TfidfVectorizer(stop_words=stopwords, binary=True)
+        tr = pre.fit_transform(doc_treino)
+        te = pre.transform(doc_teste)
+        selectKbest(pre, treino, k)
+        
     else:
         return treino, teste
 
@@ -44,3 +62,10 @@ def feature_selection_methods(treino, classes, teste, metodo, k, features):
 
 
 
+def selectKbest(vectorizer, tfidf_result,k):
+    # http://stackoverflow.com/questions/16078015/
+    scores = zip(vectorizer.get_feature_names(),
+                 np.asarray(tfidf_result.sum(axis=0)).ravel())
+    sorted_scores = sorted(scores, key=lambda x: x[1], reverse=True)
+    sorted_scores = [i[0] for i in sorted_scores]
+    return sorted_scores[0:k]
