@@ -27,8 +27,8 @@ def cross_validation(data, labels, k, algoritmo, metrica, feature_extraction1, f
         trein1 = data[0:inicio] + data[fim:len(data)]
         trein_labels = labels[0:inicio] + labels[fim:len(data)]
 
-        trein, test = f.feature_extraction_methods(trein1, test1, feature_extraction1, True, False)
-        trein, test = f.feature_selection_methods(trein, trein_labels, test, feature_selection1, n_features,trein1, test1)
+        trein, test = f.feature_extraction_methods(trein1, test1, feature_extraction1, True, False, trein_labels)
+        trein, test = f.feature_selection_methods(trein, trein_labels, test, feature_selection1, n_features, trein1, test1)
 
         modelo = m.modelo(trein, trein_labels, algoritmo)
         predito = m.teste(test, modelo)
@@ -45,22 +45,22 @@ def cross_domain(data, labels, algoritmo, feature_extraction1, feature_selection
     results1 = []
     for j in range(numero_datasets):
         print(j)
-        teste = data[j]
+        test1 = data[j]
         teste_classes = labels[j]
-        treino = []
+        trein1 = []
         treino_classes = []
 
         for i in range(j):
-            treino = data[i]
+            trein1 = data[i]
             treino_classes = labels[i]
 
         for i in range(j+1, numero_datasets):
-           treino = treino + data[i]
+           trein1 = trein1 + data[i]
            treino_classes = treino_classes + labels[i]
 
-        treino, teste = f.feature_extraction_methods(treino, teste, feature_extraction1, True, False)
+        treino, teste = f.feature_extraction_methods(trein1, test1, feature_extraction1, True, False, treino_classes)
         treino, teste = f.feature_selection_methods(treino, treino_classes, teste, feature_selection1,
-                                                    n_features)
+                                                    n_features, trein1, test1)
 
         modelo = m.modelo(treino, treino_classes, algoritmo)
         predito = m.teste(teste, modelo)
@@ -115,8 +115,7 @@ def main(algoritmo, feature_extraction1, feature_selection1, n_features):
     data = x[0]
     labels = x[1]
 
-    return cross_validation(data, labels,5, algoritmo,'acuracia', feature_extraction1, feature_selection1,
-                        n_features)
+    return cross_validation(data, labels, 5,algoritmo, 'acuracia', feature_extraction1, feature_selection1,n_features)
 
 
 parametros_grid = {'algoritmo': ['logistic'],
@@ -129,4 +128,5 @@ def sort_dict(dic):
     import operator
     return sorted(dic.items(), key=operator.itemgetter(1), reverse=True)
 
-main('logistic', 'tfidf', 'tfidf', 100)
+#main('logistic', 'binario', 'delta', 100)
+main('svm', 'tfidf', 'tfidf', 100)
