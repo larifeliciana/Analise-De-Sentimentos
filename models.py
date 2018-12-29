@@ -12,7 +12,8 @@ def modelo(treino, treino_classe, tipo):
     elif tipo is 'logistic':
         modelo = linear_model.LogisticRegression(solver='lbfgs')
     elif tipo is 'svm':
-        modelo = svm.SVC(kernel="linear")
+        #modelo = svm.SVC(kernel="linear")
+        modelo = svm.LinearSVC()
     elif tipo is 'random':
         modelo = RandomForestClassifier()
     elif tipo is 'tree':

@@ -20,6 +20,7 @@ def cross_validation(data, labels, k, algoritmo, metrica, feature_extraction1, f
     tamanho = len(data) / k     # 400
     results = []
     for i in range(k):
+        print(i)
         inicio = int(tamanho * i)
         fim = int(inicio + tamanho)
         test1= data[inicio:fim]
@@ -100,33 +101,29 @@ def grid_search(parametros):
 
         dic.update({i: (x, y)})
 
-        dt.salvar('logistic', dic)
+        dt.salvar('grid', dic)
 
 
 def main(algoritmo, feature_extraction1, feature_selection1, n_features):
-    """data = []
+    data = []
     labels = []
     datasets = ['books.pk', 'eletronics.pk', 'clothes.pk', 'cds.pk', 'movies.pk']
     for i in datasets:
         x, y = dt.ler(i)
         data.append(x)
-        labels.append(y)"""
-    x = dt.ler('books.pk')
-    data = x[0]
-    labels = x[1]
+        labels.append(y)
 
-    return cross_validation(data, labels, 5,algoritmo, 'acuracia', feature_extraction1, feature_selection1,n_features)
+    return cross_domain(data, labels, algoritmo, feature_extraction1, feature_selection1,n_features)
 
 
 parametros_grid = {'algoritmo': ['logistic'],
-                   'feature_extraction1': ['tfidf', 'idf', 'counter', 'binario'],
-                   'feature_selection1': ['chi', 'anova'],
-                   'n_features': [i for i in range(100, 6000, 500)]}
+                   'feature_extraction1': ['tfidf', 'idf', 'counter', 'binario', 'delta'],
+                   'feature_selection1': ['chi', 'anova', 'counter','tfidf', 'delta'],
+                   'n_features': [i for i in range(100, 4101, 500)]}
 
 
 def sort_dict(dic):
     import operator
     return sorted(dic.items(), key=operator.itemgetter(1), reverse=True)
 
-#main('logistic', 'binario', 'delta', 100)
-main('svm', 'tfidf', 'tfidf', 100)
+grid_search(parametros_grid)
