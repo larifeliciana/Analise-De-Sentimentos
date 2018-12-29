@@ -28,8 +28,12 @@ def cross_validation(data, labels, k, algoritmo, metrica, feature_extraction1, f
         trein1 = data[0:inicio] + data[fim:len(data)]
         trein_labels = labels[0:inicio] + labels[fim:len(data)]
 
-        trein, test = f.feature_extraction_methods(trein1, test1, feature_extraction1, True, False, trein_labels)
-        trein, test = f.feature_selection_methods(trein, trein_labels, test, feature_selection1, n_features, trein1, test1)
+        equal = None
+        trein, test, pre = f.feature_extraction_methods(trein1, test1, feature_extraction1, True, False, trein_labels)
+        if feature_selection1 is feature_extraction1:
+            equal = pre, trein
+
+        trein, test = f.feature_selection_methods(trein, trein_labels, test, feature_selection1, n_features, trein1, test1, equal)
 
         modelo = m.modelo(trein, trein_labels, algoritmo)
         predito = m.teste(test, modelo)
@@ -59,9 +63,13 @@ def cross_domain(data, labels, algoritmo, feature_extraction1, feature_selection
            trein1 = trein1 + data[i]
            treino_classes = treino_classes + labels[i]
 
-        treino, teste = f.feature_extraction_methods(trein1, test1, feature_extraction1, True, False, treino_classes)
+        equal = None
+        treino, teste, pre = f.feature_extraction_methods(trein1, test1, feature_extraction1, True, False, treino_classes)
+        if feature_selection1 is feature_extraction1:
+            equal = pre, treino
+
         treino, teste = f.feature_selection_methods(treino, treino_classes, teste, feature_selection1,
-                                                    n_features, trein1, test1)
+                                                    n_features, trein1, test1, equal)
 
         modelo = m.modelo(treino, treino_classes, algoritmo)
         predito = m.teste(teste, modelo)
@@ -96,7 +104,9 @@ def grid_search(parametros):
     dic = {}
     for i in p:
         print(datetime.datetime.now())
+
         a, b, c, x = i
+        print(i)
         x, y = main(a, b, c, x)
 
         dic.update({i: (x, y)})
@@ -105,15 +115,16 @@ def grid_search(parametros):
 
 
 def main(algoritmo, feature_extraction1, feature_selection1, n_features):
-    data = []
+    """data = []
     labels = []
     datasets = ['books.pk', 'eletronics.pk', 'clothes.pk', 'cds.pk', 'movies.pk']
     for i in datasets:
         x, y = dt.ler(i)
         data.append(x)
         labels.append(y)
-
-    return cross_domain(data, labels, algoritmo, feature_extraction1, feature_selection1,n_features)
+    """
+    data, labels = dt.ler("books.pk")
+    return cross_validation(data, labels,5, algoritmo,'acuracia', feature_extraction1, feature_selection1,n_features)
 
 
 parametros_grid = {'algoritmo': ['logistic'],
@@ -126,4 +137,5 @@ def sort_dict(dic):
     import operator
     return sorted(dic.items(), key=operator.itemgetter(1), reverse=True)
 
-grid_search(parametros_grid)
+#grid_search(parametros_grid)
+main('logistic', 'delta','delta',100)

@@ -20,44 +20,49 @@ def feature_extraction_methods(treino, teste, tipo, stopwords, smooth, labels):
     elif tipo is 'delta':
         pre = delta.DeltaTfidfVectorizer(stop_words=stopwords)
 
-    return pre.fit_transform(treino,labels), pre.transform(teste)#, pre.get_feature_names()
+    return pre.fit_transform(treino,labels), pre.transform(teste), pre#, pre.get_feature_names()
 
 
-def feature_selection_methods(treino, classes, teste, metodo, k, doc_treino, doc_teste): ##precisa dos dados originais para selectionar com o tfidf e o delta
+def feature_selection_methods(treino, classes, teste, metodo, k, doc_treino, doc_teste, equal): ##precisa dos dados originais para selectionar com o tfidf e o delta
     stopwords = 'english'
+    if equal is not None:
+        pre, tr = equal
+        equal = False
+
     # Selecionar os k melhores ranqueados de acordo com o método
     if metodo is "chi":
         funct = feature_selection.SelectKBest(feature_selection.chi2, k=k)
     elif metodo is "anova":
         funct = feature_selection.SelectKBest(feature_selection.f_classif, k=k)
+
+
     elif metodo is "tfidf":
+       if equal:
         if stopwords:
             stopwords = 'english'
         pre = feature_extraction.text.TfidfVectorizer(stop_words=stopwords, binary=True)
         tr = pre.fit_transform(doc_treino)
-        te = pre.transform(doc_teste)
         return selectKbest(pre, tr,k, treino,teste)
 
     elif metodo is "delta":
+       if equal:
         if stopwords:
             stopwords = 'english'
         pre =  delta.TfidfVectorizer(stop_words=stopwords)
 
 
         tr = pre.fit_transform(doc_treino)
-        te = pre.transform(doc_teste)
 
-
-        return selectKbest(pre, tr, k, treino, teste)
+       return selectKbest(pre, tr, k, treino, teste)
     elif metodo is "counter":
+       if equal:
         if stopwords:
             stopwords = 'english'
         pre = feature_extraction.text.CountVectorizer(stop_words=stopwords)
 
 
         tr = pre.fit_transform(doc_treino)
-        te = pre.transform(doc_teste)
-        return selectKbest(pre,tr,k,treino,teste)
+       return selectKbest(pre,tr,k,treino,teste)
 
     else:
         return treino, teste
