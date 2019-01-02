@@ -63,13 +63,10 @@ def cross_domain(data, labels, algoritmo, feature_extraction1, feature_selection
            trein1 = trein1 + data[i]
            treino_classes = treino_classes + labels[i]
 
-        equal = None
-        treino, teste, pre = f.feature_extraction_methods(trein1, test1, feature_extraction1, True, False, treino_classes)
-        if feature_selection1 is feature_extraction1:
-            equal = pre, treino
 
+        treino, teste, pre = f.feature_extraction_methods(trein1, test1, feature_extraction1, True, False, treino_classes)
         treino, teste = f.feature_selection_methods(treino, treino_classes, teste, feature_selection1,
-                                                    n_features, trein1, test1, equal)
+                                                    n_features)
 
         modelo = m.modelo(treino, treino_classes, algoritmo)
         predito = m.teste(teste, modelo)
@@ -111,25 +108,25 @@ def grid_search(parametros):
 
         dic.update({i: (x, y)})
 
-        dt.salvar('grid', dic)
+        dt.salvar('logistic_1', dic)
 
 
 def main(algoritmo, feature_extraction1, feature_selection1, n_features):
-    """data = []
+    data = []
     labels = []
     datasets = ['books.pk', 'eletronics.pk', 'clothes.pk', 'cds.pk', 'movies.pk']
     for i in datasets:
         x, y = dt.ler(i)
         data.append(x)
         labels.append(y)
-    """
-    data, labels = dt.ler("books.pk")
-    return cross_validation(data, labels,5, algoritmo,'acuracia', feature_extraction1, feature_selection1,n_features)
+
+    #data, labels = dt.ler("books.pk")
+    return cross_domain(data, labels ,algoritmo, feature_extraction1, feature_selection1,n_features)
 
 
 parametros_grid = {'algoritmo': ['logistic'],
-                   'feature_extraction1': ['tfidf', 'idf', 'counter', 'binario', 'delta'],
-                   'feature_selection1': ['chi', 'anova', 'counter','tfidf', 'delta'],
+                   'feature_extraction1': ['tfidf','idf', 'counter', 'binario', 'delta'],
+                   'feature_selection1': ['chi', 'anova','fvalue'],
                    'n_features': [i for i in range(100, 4101, 500)]}
 
 
@@ -137,5 +134,5 @@ def sort_dict(dic):
     import operator
     return sorted(dic.items(), key=operator.itemgetter(1), reverse=True)
 
-#grid_search(parametros_grid)
-main('logistic', 'delta','delta',100)
+grid_search(parametros_grid)
+#print(dt.ler('grid1'))
