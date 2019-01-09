@@ -114,7 +114,7 @@ def grid_search(parametros):
 def main(algoritmo, feature_extraction1, feature_selection1, n_features):
     data = []
     labels = []
-    datasets = ['books.pk', 'eletronics.pk', 'clothes.pk', 'cds.pk', 'movies.pk']
+    datasets = ['books.pk', 'electronics.pk', 'clothes.pk', 'cds.pk', 'movies.pk']
     for i in datasets:
         x, y = dt.ler(i)
         data.append(x)
