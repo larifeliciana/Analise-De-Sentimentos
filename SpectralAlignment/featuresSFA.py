@@ -16,7 +16,7 @@ from collections import defaultdict
 import numpy as np
 from nltk.corpus import stopwords
 import nltk
-from nltk.stem import SnowballStemmer
+from nltk.stem import WordNetLemmatizer
 import string
 from data import ler
 
@@ -142,8 +142,9 @@ class FEATURE_GENERATOR:
 
         # pos = nltk.pos_tag(elements)
         lemmas = []
+        word = WordNetLemmatizer()
         for i in range(len(elements)):
-            lemma = elements[i].lower()
+            lemma = word.lemmatize(elements[i].lower())
             if not self.is_stop_word(lemma) and lemma not in string.punctuation and lemma.isalpha():
                 lemmas.append(lemma)
         return lemmas
@@ -251,7 +252,7 @@ class FEATURE_GENERATOR:
         Create a feature vector from the tokens and return it.
         """
         fv = defaultdict(int)
-        # generate unigram features
+        # generate unigram and bigram features
         for i in range(len(lemmas)):
             fv[lemmas[i]] += 1
             if i < (len(lemmas) - 1):

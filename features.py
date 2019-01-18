@@ -4,6 +4,7 @@ from sklearn import feature_selection
 import delta
 import numpy as np
 
+
 def feature_extraction_methods(treino, teste, tipo, stopwords, smooth, labels):
     if stopwords:
         stopwords = 'english'

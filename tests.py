@@ -7,6 +7,7 @@ import math
 import datetime
 import random
 from itertools import permutations
+import SpectralAlignmentIgor.SFA
 
 
 def avaliacao(metrica, classes, teste):
@@ -63,11 +64,9 @@ def cross_domain(data, labels, algoritmo, feature_extraction1, feature_selection
            trein1 = trein1 + data[i]
            treino_classes = treino_classes + labels[i]
 
-
         treino, teste, pre = f.feature_extraction_methods(trein1, test1, feature_extraction1, True, False, treino_classes)
         treino, teste = f.feature_selection_methods(treino, treino_classes, teste, feature_selection1,
                                                     n_features)
-
         modelo = m.modelo(treino, treino_classes, algoritmo)
         predito = m.teste(teste, modelo)
         results.append(avaliacao('acuracia', teste_classes, predito))

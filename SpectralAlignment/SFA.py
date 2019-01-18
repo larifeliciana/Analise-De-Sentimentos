@@ -146,7 +146,7 @@ def selectTh(h, t):
     for (key, val) in h.items():
         if val > t:
             p[key] = val
-    del(h)
+    del h
     return p
 
 
@@ -154,10 +154,10 @@ def getVal(x, y, M):
     """
     Returns the value of the element (x,y) in M.
     """
-    if (x,y) in M:
-        return M[(x,y)] 
-    elif (y,x) in M:
-        return M[(y,x)]
+    if (x, y) in M:
+        return M[(x, y)]
+    elif (y, x) in M:
+        return M[(y, x)]
     else:
         return 0
     pass
@@ -174,11 +174,11 @@ def createMatrix(source, target):
     scores to a file with name source-target.pmi (feat, fid, score).
     """
     # Parameters
-    domainTh = {'books':20, 'cds':100, 'clothes':20, 'electronics':20}
+    domainTh = {'books':5, 'cds':5, 'clothes':5, 'electronics':5}
     SourceFreqTh = domainTh[source]
     TargetFreqTh = domainTh[target]
-    coocTh = 5
-    noPivots = 500
+    coocTh = 4
+    noPivots = 100
 
     print("Source = %s, Target = %s" % (source, target))
 
@@ -247,6 +247,7 @@ def createMatrix(source, target):
     # Bollegala version
     # pivotList = C.items()
     # pivotList.sort(lambda x, y: -1 if x[1] > y[1] else 1)
+
     pivotList = sorted(C.items(), key=lambda x: x[1])
     # write pivots to a file.
     pivotsFile = open("work/%s-%s/DI_list" % (source, target), 'w')
@@ -270,7 +271,7 @@ def createMatrix(source, target):
     nDS = len(DSList)
     nDI = len(DI)
 
-    # Compute matrix DSxSI and save it. 
+    # Compute matrix DSxSI and save it.
     R = np.zeros((nDS, nDI), dtype=np.float)
     for i in range(0, nDS):
         for j in range(0, nDI):
@@ -437,14 +438,14 @@ def batchEval():
 
 
 if __name__ == "__main__":
-    source = "books"
-    target = "cds"
+    source = "clothes"
+    target = "electronics"
     # generateFeatureVectors("books")
     # generateFeatureVectors("cds")
     # generateFeatureVectors("electronics")
     # generateFeatureVectors("clothes")
     # generateAll()
-    createMatrix(source, target)
+    # createMatrix(source, target)
     learnProjection(source, target)
     evaluate_SA(source, target, False)
     evaluate_SA(source, target, True)
