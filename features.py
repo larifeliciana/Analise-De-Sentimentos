@@ -24,7 +24,7 @@ def feature_extraction_methods(treino, teste, tipo, stopwords, smooth, labels):
     return pre.fit_transform(treino,labels), pre.transform(teste), pre#, pre.get_feature_names()
 
 
-def feature_selection_methods(treino, classes, teste, metodo, k, feature_names): ##precisa dos dados originais para selectionar com o tfidf e o delta
+def feature_selection_methods(treino, classes, teste, metodo, k, feature_names, trein1, test1): ##precisa dos dados originais para selectionar com o tfidf e o delta
     stopwords = 'english'
 
     # Selecionar os k melhores ranqueados de acordo com o método
@@ -34,9 +34,19 @@ def feature_selection_methods(treino, classes, teste, metodo, k, feature_names):
         funct = feature_selection.SelectKBest(feature_selection.f_classif, k=k)
     elif metodo is "fvalue":
         funct = feature_selection.SelectKBest(feature_selection.f_regression, k=k)
+    elif metodo is "tfidf":
+        funct = feature_extraction.text.TfidfVectorizer(max_features=k)
+        treino = funct.fit_transform(trein1)
+        teste = funct.transform(test1)
+        return treino, teste
+    elif metodo is "delta":
+        funct = feature_extraction.text.TfidfVectorizer(max_features=k)
+        treino = funct.fit_transform(trein1, classes)
+        teste = funct.transform(test1)
+        return treino, teste
 
     treino = funct.fit_transform(treino, classes)
-    teste = funct.transform(teste)
+    teste = funct.transform(test1)
     mask = funct.get_support()  # list of booleans
     new_features = []  # The list of your K best features
 

@@ -16,7 +16,7 @@ import math
 import numpy as np
 import scipy.io as sio 
 import scipy.sparse as sp
-from sparsesvd import sparsesvd
+#from sparsesvd import sparsesvd
 import subprocess
 import SpectralAlignment.featuresSFA as features
 
